@@ -40,7 +40,7 @@
         "icons/icon.icns",
         "icons/icon.png"
       ],
-      "resources": [],
+      "resources": ["../backend/*"],
       "externalBin": [],
       "copyright": "Copyright © 2026 Trawl",
       "category": "Utilities",

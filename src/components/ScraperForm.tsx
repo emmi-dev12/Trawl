@@ -16,6 +16,7 @@ export function ScraperForm({ onScrape, isLoading }: ScraperFormProps) {
   const [extractLinks, setExtractLinks] = useState(true)
   const [extractText, setExtractText] = useState(true)
   const [extractStructured, setExtractStructured] = useState(true)
+  const [extractBranding, setExtractBranding] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,6 +26,7 @@ export function ScraperForm({ onScrape, isLoading }: ScraperFormProps) {
     if (extractLinks) extract.push('links')
     if (extractText) extract.push('text')
     if (extractStructured) extract.push('structured')
+    if (extractBranding) extract.push('branding')
 
     onScrape({
       url,
@@ -166,6 +168,15 @@ export function ScraperForm({ onScrape, isLoading }: ScraperFormProps) {
                     disabled={isLoading}
                   />
                   <span>Structured</span>
+                </label>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={extractBranding}
+                    onChange={(e) => setExtractBranding(e.target.checked)}
+                    disabled={isLoading}
+                  />
+                  <span>Branding</span>
                 </label>
               </div>
             </div>

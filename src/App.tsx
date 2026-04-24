@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Copy, FileJson, FileText, Check } from 'lucide-react'
 import { ScraperForm } from './components/ScraperForm'
 import { ResultsTable } from './components/ResultsTable'
+import { BrandingPanel } from './components/BrandingPanel'
 import { StatusBar } from './components/StatusBar'
 import { UpdateNotification } from './components/UpdateNotification'
 import { MenuBar } from './components/MenuBar'
@@ -165,6 +166,10 @@ export function App() {
             results={results}
             isLoading={isLoading}
           />
+
+          {results.length > 0 && results[0]?.branding && Object.keys(results[0].branding).length > 0 && (
+            <BrandingPanel branding={results[0].branding as any} url={results[0].url} />
+          )}
 
           {/* Export Buttons */}
           {results.length > 0 && (

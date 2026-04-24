@@ -24,6 +24,10 @@ class ScrapeRequest(BaseModel):
     extract: List[str] = ["links", "text", "structured"]
 
 
+class BrandingRequest(BaseModel):
+    url: str
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global scraper
@@ -90,6 +94,27 @@ async def stop_scrape():
         scraper.request_stop()
         return {"status": "stop requested"}
     return {"status": "no active scrape"}
+
+
+@app.post("/branding")
+async def extract_branding(request: BrandingRequest):
+    global scraper
+    if not request.url.startswith(("http://", "https://")):
+        raise HTTPException(status_code=400, detail="URL must start with http:// or https://")
+    async with scraper_lock:
+        try:
+            result = await scraper.scrape(
+                url=request.url,
+                mode="single",
+                max_pages=1,
+                scroll=False,
+                extract=["branding"]
+            )
+            branding = result["pages"][0]["branding"] if result["pages"] else {}
+            return {"url": request.url, "branding": branding}
+        except Exception as e:
+            logger.error(f"Branding extraction error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/health")
