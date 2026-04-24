@@ -22,6 +22,25 @@ export function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState({ current: 0, total: 0, message: '' })
   const [copied, setCopied] = useState(false)
+  const [backendReady, setBackendReady] = useState(false)
+
+  // Poll backend health until ready
+  useEffect(() => {
+    let attempts = 0
+    const check = setInterval(async () => {
+      try {
+        const r = await fetch('http://127.0.0.1:5555/health')
+        if (r.ok) {
+          setBackendReady(true)
+          clearInterval(check)
+        }
+      } catch {
+        attempts++
+        if (attempts > 60) clearInterval(check) // give up after 30s
+      }
+    }, 500)
+    return () => clearInterval(check)
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(async () => {
@@ -143,8 +162,15 @@ export function App() {
           </div>
         </div>
 
+        {!backendReady && (
+          <div className="backend-starting">
+            <span className="backend-dot" />
+            Starting backend…
+          </div>
+        )}
+
         {/* Scraper Form */}
-        <ScraperForm onScrape={handleScrape} isLoading={isLoading} />
+        <ScraperForm onScrape={handleScrape} isLoading={isLoading || !backendReady} />
 
         {/* Status Bar */}
         <StatusBar

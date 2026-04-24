@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional
@@ -40,6 +41,13 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Trawl Scraper API", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["tauri://localhost", "https://tauri.localhost", "http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 progress_state = {
     "current": 0,
