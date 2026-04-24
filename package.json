@@ -2,67 +2,23 @@
   "name": "trawl",
   "version": "1.0.0",
   "description": "A fast, no-AI, general-purpose web scraper for macOS",
-  "main": "frontend/main.js",
-  "homepage": "./",
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "dist": "tauri build",
+    "bundle": "tauri build --bundle dmg",
+    "backend": "cd backend && python server.py"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^1.5.0",
+    "@tauri-apps/cli": "^1.5.0"
+  },
+  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/emmi-dev12/trawl.git"
   },
-  "scripts": {
-    "start": "electron .",
-    "dev": "concurrently \"npm run backend\" \"electron .\"",
-    "backend": "cd backend && python server.py",
-    "build": "electron-builder --publish=never",
-    "build-release": "electron-builder --publish=always",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
-  },
-  "keywords": ["scraper", "web", "playwright"],
   "author": "Trawl Team",
-  "license": "MIT",
-  "devDependencies": {
-    "electron": "^27.0.0",
-    "electron-builder": "^24.6.4",
-    "electron-updater": "^6.1.1",
-    "concurrently": "^8.2.1"
-  },
-  "dependencies": {
-    "electron-updater": "^6.1.1"
-  },
-  "build": {
-    "appId": "com.trawl.app",
-    "productName": "Trawl",
-    "files": [
-      "frontend/**/*",
-      "backend/**/*",
-      "package.json"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "universal"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "universal"
-          ]
-        }
-      ],
-      "category": "public.app-category.utilities",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "entitlements.mac.plist",
-      "entitlementsInherit": "entitlements.mac.plist"
-    },
-    "dmg": {
-      "sign": false
-    }
-  }
+  "license": "MIT"
 }

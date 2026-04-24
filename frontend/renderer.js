@@ -1,3 +1,5 @@
+const { invoke } = window.__TAURI__.tauri;
+
 const BACKEND_URL = "http://127.0.0.1:5555";
 const STATUS_POLL_INTERVAL = 500;
 
@@ -5,7 +7,6 @@ let isScraing = false;
 let currentResults = [];
 let statusPollInterval = null;
 let updateInfo = null;
-let updateDownloaded = false;
 
 const urlInput = document.getElementById("urlInput");
 const scrapeBtn = document.getElementById("scrapeBtn");
@@ -23,8 +24,6 @@ const exportSection = document.getElementById("exportSection");
 const exportCsvBtn = document.getElementById("exportCsvBtn");
 const exportJsonBtn = document.getElementById("exportJsonBtn");
 const copyBtn = document.getElementById("copyBtn");
-
-// Update elements
 const updateNotification = document.getElementById("updateNotification");
 const updateMessage = document.getElementById("updateMessage");
 const downloadUpdateBtn = document.getElementById("downloadUpdateBtn");
@@ -40,9 +39,6 @@ copyBtn.addEventListener("click", copyToClipboard);
 checkUpdateBtn.addEventListener("click", checkForUpdates);
 downloadUpdateBtn.addEventListener("click", downloadUpdate);
 dismissUpdateBtn.addEventListener("click", dismissUpdate);
-
-// Setup update listeners
-setupUpdateListeners();
 
 // Initialize
 initializeApp();
@@ -94,8 +90,19 @@ async function startScrape() {
     startStatusPolling();
 
     // Start scraping
-    const result = await window.api.scrape(config);
+    const response = await fetch(`${BACKEND_URL}/scrape`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(config)
+    });
 
+    if (!response.ok) {
+      throw new Error(`Scrape failed: ${response.statusText}`);
+    }
+
+    const result = await response.json();
     currentResults = result.pages;
     updateTable(result.pages);
     statusText.textContent = `Completed: ${result.count} pages in ${result.duration_seconds}s`;
@@ -116,7 +123,8 @@ async function startScrape() {
 function startStatusPolling() {
   statusPollInterval = setInterval(async () => {
     try {
-      const status = await window.api.getStatus();
+      const response = await fetch(`${BACKEND_URL}/status`);
+      const status = await response.json();
       if (status.current > 0 && status.total > 0) {
         const percent = Math.round((status.current / status.total) * 100);
         progressFill.style.width = percent + "%";
@@ -230,44 +238,6 @@ function copyToClipboard() {
     });
 }
 
-// Update functionality
-function setupUpdateListeners() {
-  window.api.onUpdateAvailable((info) => {
-    console.log("Update available:", info);
-    updateInfo = info;
-    showUpdateNotification(`Update available: v${info.version}`);
-  });
-
-  window.api.onUpdateNotAvailable(() => {
-    console.log("No updates available");
-  });
-
-  window.api.onUpdateProgress((data) => {
-    const percent = Math.round(data.percent);
-    updateMessage.textContent = `Downloading update... ${percent}%`;
-  });
-
-  window.api.onUpdateDownloaded(() => {
-    console.log("Update downloaded");
-    updateDownloaded = true;
-    downloadUpdateBtn.textContent = "Install";
-    downloadUpdateBtn.onclick = () => {
-      window.api.installUpdate();
-    };
-  });
-
-  window.api.onUpdateError((error) => {
-    console.error("Update error:", error);
-    updateMessage.textContent = `Update error: ${error}`;
-  });
-}
-
-function showUpdateNotification(message) {
-  updateMessage.textContent = message;
-  updateNotification.style.display = "block";
-  downloadUpdateBtn.textContent = "Download";
-}
-
 function dismissUpdate() {
   updateNotification.style.display = "none";
   updateInfo = null;
@@ -277,14 +247,13 @@ async function checkForUpdates() {
   try {
     checkUpdateBtn.disabled = true;
     checkUpdateBtn.textContent = "Checking...";
-    const result = await window.api.checkForUpdates();
-    if (!result || !result.updateInfo) {
-      checkUpdateBtn.textContent = "No updates";
-      setTimeout(() => {
-        checkUpdateBtn.textContent = versionText.textContent;
-        checkUpdateBtn.disabled = false;
-      }, 2000);
-    }
+
+    // TODO: Implement update check with Tauri updater
+    checkUpdateBtn.textContent = "No updates";
+    setTimeout(() => {
+      checkUpdateBtn.textContent = versionText.textContent;
+      checkUpdateBtn.disabled = false;
+    }, 2000);
   } catch (error) {
     console.error("Check for updates error:", error);
     checkUpdateBtn.textContent = "Check failed";
@@ -295,26 +264,23 @@ async function checkForUpdates() {
   }
 }
 
-async function downloadUpdate() {
-  if (!updateInfo) {
-    return;
-  }
-  try {
-    downloadUpdateBtn.disabled = true;
-    downloadUpdateBtn.textContent = "Downloading...";
-    await window.api.downloadUpdate();
-  } catch (error) {
-    console.error("Download error:", error);
-    downloadUpdateBtn.disabled = false;
-    downloadUpdateBtn.textContent = "Download";
-  }
+function downloadUpdate() {
+  // TODO: Implement update download
+  console.log("Download update");
 }
 
 async function initializeApp() {
   try {
-    const version = await window.api.getVersion();
+    const version = await invoke("check_version");
     versionText.textContent = `v${version}`;
   } catch (error) {
     console.error("Error getting version:", error);
+  }
+
+  // Start the backend
+  try {
+    await invoke("start_backend");
+  } catch (error) {
+    console.error("Error starting backend:", error);
   }
 }

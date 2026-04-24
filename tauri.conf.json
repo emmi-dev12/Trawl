@@ -1,0 +1,82 @@
+{
+  "productName": "Trawl",
+  "version": "1.0.0",
+  "identifier": "com.trawl.app",
+  "build": {
+    "beforeBuildCommand": "npm run backend",
+    "beforeDevCommand": "npm run backend",
+    "devPath": "http://localhost:3000",
+    "frontendDist": "frontend"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Trawl",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 800,
+        "minHeight": 600,
+        "visible": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "http": {
+        "all": true,
+        "scope": ["http://127.0.0.1:5555/**"]
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": ["dmg", "zip"],
+      "identifier": "com.trawl.app",
+      "icon": [
+        "icons/icon.png"
+      ],
+      "resources": [],
+      "externalBin": [],
+      "copyright": "Copyright © 2026 Trawl",
+      "category": "Utilities",
+      "shortDescription": "Fast web scraper for macOS",
+      "longDescription": "A fast, offline web scraper with real-world JavaScript rendering, infinite scroll handling, and intelligent data extraction.",
+      "deb": {
+        "depends": []
+      },
+      "macOS": {
+        "frameworks": [],
+        "minimumSystemVersion": "10.5",
+        "useBootstrapper": true,
+        "exceptionDomain": "com.trawl.app"
+      },
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "signingIdentity": null,
+        "timestampUrl": ""
+      }
+    },
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://releases.example.com/updates/{{target}}/{{current_version}}"
+      ],
+      "dialog": true,
+      "pubkey": "pub"
+    },
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false
+    }
+  }
+}

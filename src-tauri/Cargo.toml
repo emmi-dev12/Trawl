@@ -1,0 +1,23 @@
+[package]
+name = "trawl"
+version = "1.0.0"
+description = "A fast web scraper for macOS"
+authors = ["Trawl Team"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "1.5", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.5", features = ["shell-open", "http-client", "updater"] }
+tokio = { version = "1", features = ["full"] }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[[bin]]
+name = "trawl"
+path = "src/main.rs"
