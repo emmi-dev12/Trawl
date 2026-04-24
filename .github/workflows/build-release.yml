@@ -77,7 +77,7 @@ jobs:
           if [ -n "$APP_PATH" ]; then
             BINARY_PATH="$APP_PATH/Contents/MacOS/trawl"
             if [ -f "$BINARY_PATH" ]; then
-              cp src-tauri/target/release/trawl-universal "$BINARY_PATH"
+              cp target/release/trawl-universal "$BINARY_PATH"
               echo "Replaced binary with universal version"
             fi
           fi
