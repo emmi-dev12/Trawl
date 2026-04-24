@@ -33,9 +33,7 @@
       "active": true,
       "targets": ["app", "dmg"],
       "identifier": "com.trawl.app",
-      "icon": [
-        "icons/icon.png"
-      ],
+      "icon": [],
       "resources": [],
       "externalBin": [],
       "copyright": "Copyright © 2026 Trawl",
