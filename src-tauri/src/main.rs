@@ -72,7 +72,7 @@ fn start_backend() {
     .args(&["backend/server.py"])
     .spawn();
 
-  if let Ok(child) = child {
+  if let Ok(_child) = child {
     // Backend started successfully
     println!("Backend process started");
   } else {
