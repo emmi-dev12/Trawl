@@ -51,16 +51,21 @@ jobs:
       - name: Build native app (Tauri)
         run: npm run tauri-build
 
-      - name: Find artifacts
+      - name: Package app as ZIP
         id: artifacts
         run: |
-          DMG_FILE=$(find src-tauri/target/release/bundle/dmg -name "*.dmg" -type f | head -1)
-          if [ -z "$DMG_FILE" ]; then
-            echo "Error: DMG not found"
+          APP_PATH=$(find src-tauri/target/release/bundle/macos -name "*.app" -type d | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: .app bundle not found"
+            find src-tauri/target/release/bundle -type f | head -20
             exit 1
           fi
-          echo "dmg=$DMG_FILE" >> $GITHUB_OUTPUT
-          echo "DMG: $DMG_FILE"
+          echo "Found: $APP_PATH"
+          VERSION="${{ steps.version.outputs.tag }}"
+          ZIP_FILE="Trawl-${VERSION}.zip"
+          ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$ZIP_FILE"
+          echo "zip=$ZIP_FILE" >> $GITHUB_OUTPUT
+          echo "ZIP: $ZIP_FILE"
 
       - name: Create release
         uses: softprops/action-gh-release@v1
@@ -78,28 +83,24 @@ jobs:
             - Infinite scroll detection
             - Smart link extraction
             - CSV and JSON export
-            - Auto-update support
             - Beautiful React UI with Vite
 
             ## Installation
 
-            1. Download the DMG file below
-            2. Mount it (double-click)
-            3. Drag Trawl to Applications
+            1. Download the ZIP file below
+            2. Extract it (double-click)
+            3. Move Trawl.app to Applications
             4. Launch from Applications
-
-            The app will automatically check for updates.
 
             ## What's New
             - Completely rewritten with Tauri (native framework)
             - New modern React UI with Vite
             - Beautiful dark theme
-            - Native menubar integration
             - 40x smaller bundle size
 
             See GitHub commits for technical changes in this release.
           files: |
-            ${{ steps.artifacts.outputs.dmg }}
+            ${{ steps.artifacts.outputs.zip }}
           draft: false
           prerelease: false
         env:
