@@ -2,7 +2,7 @@ name: Build & Release
 
 on:
   push:
-    branches: [main]
+    branches: [claude/build-trawl-scraper-D4fCn]
   workflow_dispatch:
 
 jobs:
