@@ -20,50 +20,90 @@ A clean, minimal, developer-grade web scraper with a native Electron UI. Handles
 
 ## Installation
 
-### Prerequisites
+### Option 1: Download Pre-Built App (Recommended)
+
+Download the latest DMG from [Releases](https://github.com/emmi-dev12/trawl/releases):
+
+1. Download `Trawl-DD.MM.YYYY-HHMM.dmg`
+2. Double-click to mount the DMG
+3. Drag **Trawl** to the **Applications** folder
+4. Launch from Applications
+
+The app will automatically check for updates on startup.
+
+### Option 2: Build from Source
+
+#### Prerequisites
 
 - macOS 10.13+
 - Python 3.8+
 - Node.js 16+
-- pip, npm
+- Homebrew (optional but recommended)
 
-### Setup
+#### Quick Setup
 
-1. **Install Python dependencies**:
-   ```bash
-   pip install -r backend/requirements.txt
-   playwright install chromium
-   ```
+```bash
+# Clone and navigate
+git clone https://github.com/emmi-dev12/trawl.git
+cd trawl
 
-2. **Install Node dependencies**:
-   ```bash
-   npm install
-   ```
+# One-command install
+make install
 
-## Running
+# Run
+make run
+```
 
-### Development (with frontend reload)
+Or manually:
+
+```bash
+# Install Python dependencies
+pip install -r backend/requirements.txt
+playwright install chromium
+
+# Install Node dependencies
+npm install
+
+# Run
+npm start
+```
+
+#### Build DMG Distribution
+
+```bash
+make dist
+```
+
+The DMG will be created in `dist/` folder.
+
+### Development
+
+```bash
+make dev
+```
+
+Or:
 
 ```bash
 npm run dev
 ```
 
-This starts both the backend and Electron app.
+This starts both the backend and Electron app with hot-reload.
 
-### Production
+## Auto-Updates
 
-```bash
-npm start
-```
+Trawl includes built-in auto-update functionality:
 
-### Run backend only (for testing)
+- **Automatic checks**: The app checks for updates every hour in the background
+- **Manual check**: Click the version button (e.g., "v1.0.0") in the top-right header to check for updates anytime
+- **One-click install**: When an update is available, download and install with a single click
+- **Seamless**: The app restarts automatically after installing an update
+- **Release format**: `DD.MM.YYYY-HHMM` (e.g., `24.04.2026-1430`)
 
-```bash
-cd backend
-python server.py
-```
-
-The API will be available at `http://127.0.0.1:5555`.
+To install updates:
+1. A notification will appear when a new version is available (or click the version button to check)
+2. Click "Download"
+3. Once downloaded, click "Install" to apply the update
 
 ## API Endpoints
 

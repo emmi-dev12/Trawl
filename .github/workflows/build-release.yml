@@ -1,0 +1,119 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          playwright install chromium
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Generate version tag
+        id: version
+        run: |
+          VERSION=$(date '+%d.%m.%Y-%H%M')
+          echo "tag=$VERSION" >> $GITHUB_OUTPUT
+          echo "Trawl Release: $VERSION"
+
+      - name: Update package.json version
+        run: |
+          VERSION=$(date '+%d.%m.%Y-%H%M')
+          npm version --no-git-tag-v $VERSION
+
+      - name: Build DMG
+        run: npm run dist
+
+      - name: Find DMG file
+        id: dmg
+        run: |
+          DMG_FILE=$(find . -name "*.dmg" -type f | head -1)
+          echo "path=$DMG_FILE" >> $GITHUB_OUTPUT
+          echo "DMG: $DMG_FILE"
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          release_name: Trawl ${{ steps.version.outputs.tag }}
+          body: |
+            ## Trawl Release
+
+            **Version:** ${{ steps.version.outputs.tag }}
+
+            ### What's Included
+            - Fast, offline web scraper
+            - Support for JavaScript-heavy sites
+            - Infinite scroll handling
+            - Real-time progress tracking
+            - CSV and JSON export
+
+            ### Installation
+            1. Download `Trawl-${{ steps.version.outputs.tag }}.dmg`
+            2. Open the DMG file
+            3. Drag Trawl to Applications folder
+            4. Launch from Applications
+
+            The app will automatically check for updates and notify you when a new version is available.
+          files: ${{ steps.dmg.outputs.path }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload DMG to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.dmg.outputs.path }}
+          asset_name: Trawl-${{ steps.version.outputs.tag }}.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Find ZIP file
+        id: zip
+        run: |
+          ZIP_FILE=$(find . -name "*.zip" -type f | grep -v node_modules | head -1)
+          if [ -n "$ZIP_FILE" ]; then
+            echo "path=$ZIP_FILE" >> $GITHUB_OUTPUT
+            echo "ZIP: $ZIP_FILE"
+          fi
+
+      - name: Upload ZIP to Release
+        if: steps.zip.outputs.path != ''
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.zip.outputs.path }}
+          asset_name: Trawl-${{ steps.version.outputs.tag }}.zip
+          asset_content_type: application/zip

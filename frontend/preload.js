@@ -1,4 +1,4 @@
-const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
   async scrape(config) {
@@ -25,5 +25,42 @@ contextBridge.exposeInMainWorld("api", {
       method: "POST"
     });
     return response.json();
+  },
+
+  // Update API
+  async checkForUpdates() {
+    return await ipcRenderer.invoke("check-for-updates");
+  },
+
+  async downloadUpdate() {
+    return await ipcRenderer.invoke("download-update");
+  },
+
+  async installUpdate() {
+    return await ipcRenderer.invoke("install-update");
+  },
+
+  async getVersion() {
+    return await ipcRenderer.invoke("get-version");
+  },
+
+  onUpdateAvailable(callback) {
+    ipcRenderer.on("update-available", (_, info) => callback(info));
+  },
+
+  onUpdateNotAvailable(callback) {
+    ipcRenderer.on("update-not-available", callback);
+  },
+
+  onUpdateProgress(callback) {
+    ipcRenderer.on("update-progress", (_, data) => callback(data));
+  },
+
+  onUpdateDownloaded(callback) {
+    ipcRenderer.on("update-downloaded", callback);
+  },
+
+  onUpdateError(callback) {
+    ipcRenderer.on("update-error", (_, error) => callback(error));
   }
 });

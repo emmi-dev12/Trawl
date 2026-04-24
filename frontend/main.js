@@ -1,12 +1,18 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain, dialog } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const path = require("path");
 const { spawn } = require("child_process");
+const fs = require("fs");
 
 let mainWindow;
 let backendProcess;
 const BACKEND_URL = "http://127.0.0.1:5555";
 
-const isProduction = !process.argv.includes("--dev");
+const isDev = !app.isPackaged;
+
+// Configure auto-updater
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = false;
 
 async function waitForBackend(maxAttempts = 30) {
   const http = require("http");
@@ -37,15 +43,31 @@ async function waitForBackend(maxAttempts = 30) {
   throw new Error("Backend failed to start within timeout");
 }
 
+function getPythonPath() {
+  // In packaged app, Python is bundled
+  if (app.isPackaged) {
+    const bundledPython = path.join(
+      process.resourcesPath,
+      "python",
+      "bin",
+      "python3"
+    );
+    if (fs.existsSync(bundledPython)) {
+      return bundledPython;
+    }
+  }
+
+  // Fallback to system Python
+  return "python3";
+}
+
 function startBackend() {
-  const projectRoot = path.join(__dirname, "..");
+  const projectRoot = app.isPackaged
+    ? process.resourcesPath
+    : path.join(__dirname, "..");
   const backendDir = path.join(projectRoot, "backend");
 
-  // Determine Python executable
-  let pythonCmd = "python3";
-  if (process.platform === "win32") {
-    pythonCmd = "python";
-  }
+  const pythonCmd = getPythonPath();
 
   backendProcess = spawn(pythonCmd, ["server.py"], {
     cwd: backendDir,
@@ -87,7 +109,7 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  if (!isProduction) {
+  if (isDev) {
     mainWindow.webContents.openDevTools();
   }
 
@@ -96,13 +118,78 @@ function createWindow() {
   });
 }
 
+function setupAutoUpdater() {
+  autoUpdater.on("update-available", (info) => {
+    console.log("Update available:", info.version);
+    mainWindow?.webContents.send("update-available", info);
+  });
+
+  autoUpdater.on("update-not-available", () => {
+    console.log("No update available");
+    mainWindow?.webContents.send("update-not-available");
+  });
+
+  autoUpdater.on("error", (error) => {
+    console.error("Update error:", error);
+    mainWindow?.webContents.send("update-error", error.message);
+  });
+
+  autoUpdater.on("download-progress", (progressObj) => {
+    mainWindow?.webContents.send("update-progress", {
+      bytesPerSecond: progressObj.bytesPerSecond,
+      percent: progressObj.percent,
+      transferred: progressObj.transferred,
+      total: progressObj.total
+    });
+  });
+
+  autoUpdater.on("update-downloaded", () => {
+    console.log("Update downloaded");
+    mainWindow?.webContents.send("update-downloaded");
+  });
+
+  // Check for updates every hour
+  if (!isDev) {
+    setInterval(() => {
+      autoUpdater.checkForUpdates();
+    }, 60 * 60 * 1000);
+
+    // Initial check
+    setTimeout(() => {
+      autoUpdater.checkForUpdates();
+    }, 2000);
+  }
+}
+
+// IPC Handlers
+ipcMain.handle("check-for-updates", async () => {
+  return await autoUpdater.checkForUpdates();
+});
+
+ipcMain.handle("download-update", async () => {
+  autoUpdater.downloadUpdate();
+});
+
+ipcMain.handle("install-update", () => {
+  autoUpdater.quitAndInstall();
+});
+
+ipcMain.handle("get-version", () => {
+  return app.getVersion();
+});
+
 app.on("ready", async () => {
   try {
     startBackend();
     await waitForBackend();
     createWindow();
+    setupAutoUpdater();
   } catch (error) {
     console.error("Failed to start app:", error);
+    dialog.showErrorBox(
+      "Startup Error",
+      "Failed to start Trawl backend. Please check your Python installation."
+    );
     app.quit();
   }
 });

@@ -4,6 +4,8 @@ const STATUS_POLL_INTERVAL = 500;
 let isScraing = false;
 let currentResults = [];
 let statusPollInterval = null;
+let updateInfo = null;
+let updateDownloaded = false;
 
 const urlInput = document.getElementById("urlInput");
 const scrapeBtn = document.getElementById("scrapeBtn");
@@ -22,11 +24,28 @@ const exportCsvBtn = document.getElementById("exportCsvBtn");
 const exportJsonBtn = document.getElementById("exportJsonBtn");
 const copyBtn = document.getElementById("copyBtn");
 
+// Update elements
+const updateNotification = document.getElementById("updateNotification");
+const updateMessage = document.getElementById("updateMessage");
+const downloadUpdateBtn = document.getElementById("downloadUpdateBtn");
+const dismissUpdateBtn = document.getElementById("dismissUpdateBtn");
+const checkUpdateBtn = document.getElementById("checkUpdateBtn");
+const versionText = document.getElementById("versionText");
+
 // Event Listeners
 scrapeBtn.addEventListener("click", startScrape);
 exportCsvBtn.addEventListener("click", exportAsCSV);
 exportJsonBtn.addEventListener("click", exportAsJSON);
 copyBtn.addEventListener("click", copyToClipboard);
+checkUpdateBtn.addEventListener("click", checkForUpdates);
+downloadUpdateBtn.addEventListener("click", downloadUpdate);
+dismissUpdateBtn.addEventListener("click", dismissUpdate);
+
+// Setup update listeners
+setupUpdateListeners();
+
+// Initialize
+initializeApp();
 
 async function startScrape() {
   const url = urlInput.value.trim();
@@ -209,4 +228,93 @@ function copyToClipboard() {
       console.error("Failed to copy:", err);
       alert("Failed to copy to clipboard");
     });
+}
+
+// Update functionality
+function setupUpdateListeners() {
+  window.api.onUpdateAvailable((info) => {
+    console.log("Update available:", info);
+    updateInfo = info;
+    showUpdateNotification(`Update available: v${info.version}`);
+  });
+
+  window.api.onUpdateNotAvailable(() => {
+    console.log("No updates available");
+  });
+
+  window.api.onUpdateProgress((data) => {
+    const percent = Math.round(data.percent);
+    updateMessage.textContent = `Downloading update... ${percent}%`;
+  });
+
+  window.api.onUpdateDownloaded(() => {
+    console.log("Update downloaded");
+    updateDownloaded = true;
+    downloadUpdateBtn.textContent = "Install";
+    downloadUpdateBtn.onclick = () => {
+      window.api.installUpdate();
+    };
+  });
+
+  window.api.onUpdateError((error) => {
+    console.error("Update error:", error);
+    updateMessage.textContent = `Update error: ${error}`;
+  });
+}
+
+function showUpdateNotification(message) {
+  updateMessage.textContent = message;
+  updateNotification.style.display = "block";
+  downloadUpdateBtn.textContent = "Download";
+}
+
+function dismissUpdate() {
+  updateNotification.style.display = "none";
+  updateInfo = null;
+}
+
+async function checkForUpdates() {
+  try {
+    checkUpdateBtn.disabled = true;
+    checkUpdateBtn.textContent = "Checking...";
+    const result = await window.api.checkForUpdates();
+    if (!result || !result.updateInfo) {
+      checkUpdateBtn.textContent = "No updates";
+      setTimeout(() => {
+        checkUpdateBtn.textContent = versionText.textContent;
+        checkUpdateBtn.disabled = false;
+      }, 2000);
+    }
+  } catch (error) {
+    console.error("Check for updates error:", error);
+    checkUpdateBtn.textContent = "Check failed";
+    setTimeout(() => {
+      checkUpdateBtn.textContent = versionText.textContent;
+      checkUpdateBtn.disabled = false;
+    }, 2000);
+  }
+}
+
+async function downloadUpdate() {
+  if (!updateInfo) {
+    return;
+  }
+  try {
+    downloadUpdateBtn.disabled = true;
+    downloadUpdateBtn.textContent = "Downloading...";
+    await window.api.downloadUpdate();
+  } catch (error) {
+    console.error("Download error:", error);
+    downloadUpdateBtn.disabled = false;
+    downloadUpdateBtn.textContent = "Download";
+  }
+}
+
+async function initializeApp() {
+  try {
+    const version = await window.api.getVersion();
+    versionText.textContent = `v${version}`;
+  } catch (error) {
+    console.error("Error getting version:", error);
+  }
 }

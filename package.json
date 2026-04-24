@@ -4,22 +4,31 @@
   "description": "A fast, no-AI, general-purpose web scraper for macOS",
   "main": "frontend/main.js",
   "homepage": "./",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emmi-dev12/trawl.git"
+  },
   "scripts": {
     "start": "electron .",
     "dev": "concurrently \"npm run backend\" \"electron .\"",
     "backend": "cd backend && python server.py",
-    "build": "electron-builder",
-    "pack": "electron-builder --dir"
+    "build": "electron-builder --publish=never",
+    "build-release": "electron-builder --publish=always",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": ["scraper", "web", "playwright"],
-  "author": "",
+  "author": "Trawl Team",
   "license": "MIT",
   "devDependencies": {
     "electron": "^27.0.0",
     "electron-builder": "^24.6.4",
+    "electron-updater": "^6.1.1",
     "concurrently": "^8.2.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "electron-updater": "^6.1.1"
+  },
   "build": {
     "appId": "com.trawl.app",
     "productName": "Trawl",
@@ -28,9 +37,39 @@
       "backend/**/*",
       "package.json"
     ],
+    "directories": {
+      "buildResources": "assets"
+    },
     "mac": {
-      "target": ["dmg", "zip"],
-      "category": "public.app-category.utilities"
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.utilities",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist"
+    },
+    "dmg": {
+      "sign": false
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "emmi-dev12",
+      "repo": "trawl"
     }
   }
 }

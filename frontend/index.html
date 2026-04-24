@@ -8,9 +8,27 @@
 </head>
 <body>
   <div class="container">
+    <!-- Update Notification -->
+    <div id="updateNotification" class="update-notification" style="display: none;">
+      <div class="update-content">
+        <span id="updateMessage" class="update-message">Update available</span>
+        <div class="update-buttons">
+          <button id="downloadUpdateBtn" class="update-btn update-btn-primary">Download</button>
+          <button id="dismissUpdateBtn" class="update-btn update-btn-secondary">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
     <header class="header">
-      <h1>Trawl</h1>
-      <p class="subtitle">Fast web scraper for macOS</p>
+      <div class="header-content">
+        <div>
+          <h1>Trawl</h1>
+          <p class="subtitle">Fast web scraper for macOS</p>
+        </div>
+        <button id="checkUpdateBtn" class="version-btn" title="Check for updates">
+          <span id="versionText">v1.0.0</span>
+        </button>
+      </div>
     </header>
 
     <main class="main-content">
