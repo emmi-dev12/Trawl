@@ -50,19 +50,16 @@ jobs:
 
       - name: Build Rust binaries for both architectures
         run: |
-          cd src-tauri
-          cargo build --release --target x86_64-apple-darwin
-          cargo build --release --target aarch64-apple-darwin
+          cargo build --release --manifest-path src-tauri/Cargo.toml --target x86_64-apple-darwin
+          cargo build --release --manifest-path src-tauri/Cargo.toml --target aarch64-apple-darwin
 
-          # Create universal binary
-          mkdir -p target/release
+          # Binaries land in workspace root target/ because of root Cargo.toml workspace
           lipo -create \
             target/x86_64-apple-darwin/release/trawl \
             target/aarch64-apple-darwin/release/trawl \
             -output target/release/trawl-universal
 
           file target/release/trawl-universal
-          cd ..
 
       - name: Bundle app
         run: |
