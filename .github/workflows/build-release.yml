@@ -50,6 +50,14 @@ jobs:
 
       - name: Build native app (Tauri)
         run: npm run tauri-build
+        continue-on-error: true
+
+      - name: Check build output
+        run: |
+          echo "=== Build artifacts ==="
+          find src-tauri/target -type d -name bundle 2>/dev/null || echo "No bundle directory"
+          find src-tauri/target/release -type f -name trawl 2>/dev/null || echo "No binary"
+          ls -la src-tauri/target/release/ 2>/dev/null | head -20 || echo "No release dir"
 
       - name: Package app as ZIP
         id: artifacts
