@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    permissions:
+      contents: write
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +55,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          release_name: Trawl ${{ steps.version.outputs.tag }}
+          name: Trawl ${{ steps.version.outputs.tag }}
           body: |
             # Trawl ${{ steps.version.outputs.tag }}
 
