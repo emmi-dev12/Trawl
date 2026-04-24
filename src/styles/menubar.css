@@ -15,12 +15,22 @@
   gap: var(--spacing-md);
 }
 
+.logo {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(76, 201, 240, 0.2));
+}
+
 .app-title {
   font-size: 13px;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
+  background: linear-gradient(135deg, #e6edf7, var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .menubar-right {

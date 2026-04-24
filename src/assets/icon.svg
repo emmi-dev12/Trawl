@@ -1,0 +1,39 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B1220;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2a3d;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CC9F0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#38BDF8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bgGradient)" rx="110"/>
+
+  <!-- Vertical stroke (T upright) - scaled up -->
+  <line x1="256" y1="80" x2="256" y2="300" stroke="url(#iconGradient)" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- Horizontal stroke (T top) - scaled up -->
+  <line x1="110" y1="80" x2="402" y2="80" stroke="url(#iconGradient)" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- Net curve (bottom half) - more pronounced -->
+  <path d="M 110 300 Q 256 420 402 300" stroke="url(#iconGradient)" stroke-width="20" fill="none" stroke-linecap="round"/>
+
+  <!-- Data points caught in net (7 larger dots) -->
+  <circle cx="170" cy="360" r="14" fill="url(#iconGradient)"/>
+  <circle cx="256" cy="390" r="14" fill="url(#iconGradient)"/>
+  <circle cx="342" cy="360" r="14" fill="url(#iconGradient)"/>
+
+  <!-- Secondary dots (slightly smaller, offset) -->
+  <circle cx="210" cy="375" r="11" fill="#4CC9F0" opacity="0.8"/>
+  <circle cx="302" cy="375" r="11" fill="#4CC9F0" opacity="0.8"/>
+  <circle cx="150" cy="330" r="9" fill="#4CC9F0" opacity="0.6"/>
+  <circle cx="362" cy="330" r="9" fill="#4CC9F0" opacity="0.6"/>
+
+  <!-- Subtle glow effect -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#4CC9F0" stroke-width="1" opacity="0.1"/>
+</svg>
