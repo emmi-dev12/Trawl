@@ -16,10 +16,9 @@ interface BrandingData {
 
 interface BrandingPanelProps {
   branding: BrandingData
-  url: string
 }
 
-export function BrandingPanel({ branding, url }: BrandingPanelProps) {
+export function BrandingPanel({ branding }: BrandingPanelProps) {
   if (!branding || Object.keys(branding).length === 0) return null
 
   return (

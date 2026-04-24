@@ -14,6 +14,7 @@ interface ScrapedPage {
   text: string
   links: string[]
   structured: Record<string, unknown>
+  branding?: Record<string, unknown>
 }
 
 export function App() {
@@ -168,7 +169,7 @@ export function App() {
           />
 
           {results.length > 0 && results[0]?.branding && Object.keys(results[0].branding).length > 0 && (
-            <BrandingPanel branding={results[0].branding as any} url={results[0].url} />
+            <BrandingPanel branding={results[0].branding as any} />
           )}
 
           {/* Export Buttons */}
