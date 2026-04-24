@@ -63,11 +63,6 @@
     },
     "dmg": {
       "sign": false
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "emmi-dev12",
-      "repo": "trawl"
     }
   }
 }
