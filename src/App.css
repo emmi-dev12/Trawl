@@ -61,8 +61,8 @@ html, body {
 
 /* Header */
 .app-header {
-  padding: var(--spacing-xl) var(--spacing-2xl);
-  background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 100%);
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, rgba(4, 182, 212, 0.08) 0%, rgba(76, 201, 240, 0.04) 100%);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
@@ -71,29 +71,38 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .app-header h1 {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: 800;
   margin-bottom: var(--spacing-xs);
-  color: #fff;
-  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #4cc9f0 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
 }
 
 .app-header .subtitle {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--color-text-secondary);
-  font-weight: 400;
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .backend-starting {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px var(--spacing-lg);
-  font-size: 12px;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  font-size: 13px;
   color: var(--color-text-secondary);
+  background: rgba(76, 201, 240, 0.05);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .backend-dot {
@@ -115,8 +124,11 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   flex: 1;
-  padding: var(--spacing-xl) var(--spacing-2xl);
+  padding: var(--spacing-2xl);
   background: var(--color-bg);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .results-header {
@@ -137,8 +149,8 @@ html, body {
 .result-count {
   font-size: 12px;
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%);
+  border: 1px solid rgba(76, 201, 240, 0.3);
   border-radius: var(--radius-md);
   color: var(--color-primary);
   font-weight: 600;
@@ -158,7 +170,7 @@ html, body {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--color-bg-tertiary);
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text);
@@ -169,9 +181,10 @@ html, body {
 }
 
 .export-btn:hover {
-  background: var(--color-border);
-  border-color: var(--color-border-light);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(76, 201, 240, 0.2) 0%, rgba(6, 182, 212, 0.15) 100%);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 201, 240, 0.15);
 }
 
 .export-btn:active {
@@ -179,7 +192,7 @@ html, body {
 }
 
 .export-btn.copy-btn.copied {
-  background: var(--color-success);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
   border-color: var(--color-success);
 }
 

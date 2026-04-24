@@ -1,39 +1,58 @@
 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" width="512" height="512">
-  <!-- Background with gradient -->
   <defs>
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#0B1220;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1a2a3d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4CC9F0;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#38BDF8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
     </linearGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4CC9F0;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:0" />
+    </radialGradient>
   </defs>
 
-  <!-- Background -->
-  <rect width="512" height="512" fill="url(#bgGradient)" rx="110"/>
+  <!-- Main background -->
+  <rect width="512" height="512" fill="url(#bgGrad)" rx="120"/>
 
-  <!-- Vertical stroke (T upright) - scaled up -->
-  <line x1="256" y1="80" x2="256" y2="300" stroke="url(#iconGradient)" stroke-width="20" stroke-linecap="round"/>
+  <!-- Glow effect -->
+  <circle cx="256" cy="256" r="220" fill="url(#glowGrad)"/>
 
-  <!-- Horizontal stroke (T top) - scaled up -->
-  <line x1="110" y1="80" x2="402" y2="80" stroke="url(#iconGradient)" stroke-width="20" stroke-linecap="round"/>
+  <!-- T shape - main upright -->
+  <rect x="200" y="80" width="112" height="36" rx="18" fill="url(#primaryGrad)"/>
 
-  <!-- Net curve (bottom half) - more pronounced -->
-  <path d="M 110 300 Q 256 420 402 300" stroke="url(#iconGradient)" stroke-width="20" fill="none" stroke-linecap="round"/>
+  <!-- T shape - vertical stem -->
+  <rect x="224" y="100" width="64" height="240" rx="32" fill="url(#primaryGrad)"/>
 
-  <!-- Data points caught in net (7 larger dots) -->
-  <circle cx="170" cy="360" r="14" fill="url(#iconGradient)"/>
-  <circle cx="256" cy="390" r="14" fill="url(#iconGradient)"/>
-  <circle cx="342" cy="360" r="14" fill="url(#iconGradient)"/>
+  <!-- Net curve - main arc -->
+  <path
+    d="M 140 340 Q 256 420 372 340"
+    stroke="url(#primaryGrad)"
+    stroke-width="32"
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 
-  <!-- Secondary dots (slightly smaller, offset) -->
-  <circle cx="210" cy="375" r="11" fill="#4CC9F0" opacity="0.8"/>
-  <circle cx="302" cy="375" r="11" fill="#4CC9F0" opacity="0.8"/>
-  <circle cx="150" cy="330" r="9" fill="#4CC9F0" opacity="0.6"/>
-  <circle cx="362" cy="330" r="9" fill="#4CC9F0" opacity="0.6"/>
+  <!-- Connection points from T to net -->
+  <circle cx="256" cy="340" r="20" fill="url(#primaryGrad)" opacity="0.9"/>
 
-  <!-- Subtle glow effect -->
-  <circle cx="256" cy="256" r="200" fill="none" stroke="#4CC9F0" stroke-width="1" opacity="0.1"/>
+  <!-- Net nodes (data points) -->
+  <g opacity="0.85">
+    <circle cx="180" cy="370" r="18" fill="url(#primaryGrad)"/>
+    <circle cx="256" cy="395" r="18" fill="url(#primaryGrad)"/>
+    <circle cx="332" cy="370" r="18" fill="url(#primaryGrad)"/>
+  </g>
+
+  <!-- Secondary nodes (caught data) -->
+  <g opacity="0.6">
+    <circle cx="220" cy="385" r="12" fill="#4CC9F0"/>
+    <circle cx="292" cy="385" r="12" fill="#4CC9F0"/>
+  </g>
+
+  <!-- Connection lines (subtle net structure) -->
+  <line x1="256" y1="340" x2="180" y2="370" stroke="url(#primaryGrad)" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+  <line x1="256" y1="340" x2="332" y2="370" stroke="url(#primaryGrad)" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
 </svg>

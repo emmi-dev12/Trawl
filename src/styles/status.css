@@ -1,14 +1,17 @@
 .status-bar {
   padding: var(--spacing-lg) var(--spacing-2xl);
-  background: var(--color-bg-secondary);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(26, 42, 61, 0.4) 100%);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
   transition: var(--transition);
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .status-bar.active {
-  background: linear-gradient(90deg, var(--color-bg-secondary) 0%, rgba(37, 99, 235, 0.05) 100%);
-  border-bottom-color: var(--color-primary-light);
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.8) 0%, rgba(76, 201, 240, 0.08) 100%);
+  border-bottom-color: var(--color-primary);
 }
 
 .status-content {
@@ -21,7 +24,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .progress-info {
@@ -49,16 +52,16 @@
 
 .completed::before {
   content: '✓';
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
   height: 16px;
   background: var(--color-success);
   color: white;
   border-radius: 50%;
   font-size: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-weight: bold;
 }
 
 .error {
@@ -71,16 +74,15 @@
 
 .error::before {
   content: '!';
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 16px;
   height: 16px;
   background: var(--color-error);
   color: white;
   border-radius: 50%;
   font-size: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-weight: bold;
 }
 
@@ -97,9 +99,9 @@
 
 .progress-bar {
   flex: 1;
-  height: 4px;
+  height: 6px;
   background: var(--color-border);
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
   max-width: 400px;
 }
@@ -107,15 +109,15 @@
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-  border-radius: 2px;
+  border-radius: 3px;
   transition: width 300ms ease-out;
-  box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 0 12px rgba(76, 201, 240, 0.6);
 }
 
 .progress-percent {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-primary);
   font-weight: 600;
-  min-width: 28px;
+  min-width: 32px;
   text-align: right;
 }

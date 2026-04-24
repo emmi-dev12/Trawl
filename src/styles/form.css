@@ -2,10 +2,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  padding: var(--spacing-xl) var(--spacing-2xl);
-  background: var(--color-bg-secondary);
+  padding: var(--spacing-2xl);
+  background: linear-gradient(135deg, rgba(4, 182, 212, 0.06) 0%, rgba(15, 23, 42, 0.5) 100%);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .form-section {
@@ -18,24 +21,25 @@
 .url-section {
   flex-direction: row;
   align-items: center;
+  gap: var(--spacing-lg);
 }
 
 .url-input {
   flex: 1;
   padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--color-bg-tertiary);
+  background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text);
-  font-size: 13px;
+  font-size: 14px;
   outline: none;
   transition: var(--transition);
 }
 
 .url-input:focus {
-  border-color: var(--color-border-light);
+  border-color: var(--color-primary);
   background: var(--color-bg-tertiary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.1);
 }
 
 .url-input::placeholder {
@@ -52,21 +56,21 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-xl);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, #4cc9f0 0%, #06b6d4 100%);
   border: none;
   border-radius: var(--radius-md);
-  color: white;
-  font-size: 13px;
+  color: #0b1220;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(76, 201, 240, 0.3);
 }
 
 .scrape-btn:hover:not(:disabled) {
-  background: var(--color-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 20px rgba(76, 201, 240, 0.4);
 }
 
 .scrape-btn:active:not(:disabled) {
@@ -76,6 +80,7 @@
 .scrape-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* Mode Section */
@@ -86,6 +91,10 @@
 .mode-group {
   display: flex;
   gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
 }
 
 .radio-label {
@@ -95,6 +104,7 @@
   cursor: pointer;
   font-size: 13px;
   user-select: none;
+  color: var(--color-text);
 }
 
 .radio-label input[type="radio"] {
@@ -120,7 +130,7 @@
   padding: var(--spacing-lg);
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
-  border-left: 2px solid var(--color-primary);
+  border-left: 3px solid var(--color-primary);
 }
 
 .input-group {
@@ -138,7 +148,7 @@
 }
 
 .input-group input[type="number"] {
-  width: 80px;
+  width: 100px;
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
@@ -146,10 +156,12 @@
   color: var(--color-text);
   font-size: 13px;
   outline: none;
+  transition: var(--transition);
 }
 
 .input-group input[type="number"]:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.1);
 }
 
 /* Options Section */
@@ -167,14 +179,14 @@
   border-radius: var(--radius-md);
   color: var(--color-text);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
   text-align: left;
 }
 
 .advanced-toggle:hover:not(:disabled) {
-  border-color: var(--color-border-light);
+  border-color: var(--color-primary);
   background: var(--color-bg-secondary);
 }
 
@@ -186,6 +198,7 @@
 .toggle-icon {
   margin-left: auto;
   transition: transform 150ms ease-out;
+  color: var(--color-text-secondary);
 }
 
 .toggle-icon.open {
@@ -197,10 +210,11 @@
   padding: var(--spacing-lg);
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
-  border-left: 2px solid var(--color-primary);
+  border-left: 3px solid var(--color-primary);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  border: 1px solid var(--color-border);
 }
 
 .checkbox-label {
@@ -210,6 +224,7 @@
   cursor: pointer;
   font-size: 13px;
   user-select: none;
+  color: var(--color-text);
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -245,5 +260,6 @@
 
 .extract-group {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-lg);
 }
