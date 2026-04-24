@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Menu, DownloadCloud, Copy, FileJson, FileText, Check } from 'lucide-react'
+import { Copy, FileJson, FileText, Check } from 'lucide-react'
 import { ScraperForm } from './components/ScraperForm'
 import { ResultsTable } from './components/ResultsTable'
 import { StatusBar } from './components/StatusBar'
@@ -20,8 +20,6 @@ export function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState({ current: 0, total: 0, message: '' })
   const [copied, setCopied] = useState(false)
-  const [version, setVersion] = useState('1.0.0')
-  const [showMenu, setShowMenu] = useState(false)
 
   useEffect(() => {
     const timer = setInterval(async () => {
@@ -129,7 +127,7 @@ export function App() {
 
   return (
     <div className="app">
-      <MenuBar version={version} />
+      <MenuBar version="1.0.0" />
       <UpdateNotification />
 
       <main className="app-main">
