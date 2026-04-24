@@ -37,8 +37,8 @@ jobs:
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           npm version --no-git-tag-v "$VERSION"
 
-      - name: Build application
-        run: npm run dist
+      - name: Build universal macOS app
+        run: npm run build
 
       - name: Find artifacts
         id: artifacts
