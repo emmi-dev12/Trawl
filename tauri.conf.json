@@ -4,9 +4,9 @@
   "identifier": "com.trawl.app",
   "build": {
     "beforeBuildCommand": "npm run backend",
-    "beforeDevCommand": "npm run backend",
-    "devPath": "http://localhost:3000",
-    "frontendDist": "frontend"
+    "beforeDevCommand": "npm run dev",
+    "devPath": "http://localhost:5173",
+    "frontendDist": "dist"
   },
   "app": {
     "windows": [

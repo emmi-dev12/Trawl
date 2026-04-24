@@ -4,17 +4,30 @@
   "description": "A fast, no-AI, general-purpose web scraper for macOS",
   "type": "module",
   "scripts": {
-    "dev": "tauri dev",
-    "build": "tauri build",
-    "dist": "tauri build",
-    "bundle": "tauri build --bundle dmg",
-    "backend": "cd backend && python server.py"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "tauri": "tauri",
+    "tauri-dev": "tauri dev",
+    "tauri-build": "tauri build",
+    "bundle": "tauri build",
+    "backend": "cd backend && python server.py",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@tauri-apps/api": "^1.5.0",
-    "@tauri-apps/cli": "^1.5.0"
+    "@tauri-apps/cli": "^1.5.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.5.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "lucide-react": "^0.268.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/emmi-dev12/trawl.git"

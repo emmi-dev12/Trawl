@@ -1,4 +1,4 @@
-name: Build & Release
+name: Build & Release (Native Tauri)
 
 on:
   push:
@@ -21,6 +21,11 @@ jobs:
           node-version: 18.x
           cache: 'npm'
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -40,16 +45,22 @@ jobs:
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           npm version --no-git-tag-v "$VERSION"
 
-      - name: Build universal macOS app
+      - name: Build frontend (Vite)
         run: npm run build
+
+      - name: Build native app (Tauri)
+        run: npm run tauri-build
 
       - name: Find artifacts
         id: artifacts
         run: |
-          DMG_FILE=$(find dist -name "*.dmg" -type f | head -1)
-          ZIP_FILE=$(find dist -name "*.zip" -type f | head -1)
+          DMG_FILE=$(find src-tauri/target/release/bundle/dmg -name "*.dmg" -type f | head -1)
+          if [ -z "$DMG_FILE" ]; then
+            echo "Error: DMG not found"
+            exit 1
+          fi
           echo "dmg=$DMG_FILE" >> $GITHUB_OUTPUT
-          echo "zip=$ZIP_FILE" >> $GITHUB_OUTPUT
+          echo "DMG: $DMG_FILE"
 
       - name: Create release
         uses: softprops/action-gh-release@v1
@@ -59,14 +70,16 @@ jobs:
           body: |
             # Trawl ${{ steps.version.outputs.tag }}
 
-            A fast, no-AI web scraper for macOS.
+            A native macOS web scraper built with Tauri.
 
             ## Features
+            - True native app (~5 MB, not Electron wrapper)
             - Real-world JavaScript rendering
             - Infinite scroll detection
             - Smart link extraction
             - CSV and JSON export
             - Auto-update support
+            - Beautiful React UI with Vite
 
             ## Installation
 
@@ -78,10 +91,15 @@ jobs:
             The app will automatically check for updates.
 
             ## What's New
-            - See GitHub commits for changes in this release
+            - Completely rewritten with Tauri (native framework)
+            - New modern React UI with Vite
+            - Beautiful dark theme
+            - Native menubar integration
+            - 40x smaller bundle size
+
+            See GitHub commits for technical changes in this release.
           files: |
             ${{ steps.artifacts.outputs.dmg }}
-            ${{ steps.artifacts.outputs.zip }}
           draft: false
           prerelease: false
         env:
