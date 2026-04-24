@@ -46,7 +46,8 @@
       "category": "Utilities",
       "macOS": {
         "frameworks": [],
-        "minimumSystemVersion": "10.12"
+        "minimumSystemVersion": "10.12",
+        "entitlements": "../entitlements.mac.plist"
       }
     },
     "security": {
