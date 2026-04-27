@@ -33,11 +33,17 @@ class BrandingRequest(BaseModel):
 async def lifespan(app: FastAPI):
     global scraper
     scraper = TrawlScraper(headless=True)
-    await scraper.start()
-    logger.info("Scraper initialized")
+    try:
+        await scraper.start()
+        logger.info("Scraper initialized")
+    except Exception as e:
+        logger.warning(f"Failed to initialize Playwright browser: {e}. Will retry on first scrape request.")
     yield
-    await scraper.stop()
-    logger.info("Scraper cleaned up")
+    try:
+        await scraper.stop()
+        logger.info("Scraper cleaned up")
+    except Exception:
+        logger.debug("Scraper was not initialized, skipping cleanup")
 
 
 app = FastAPI(title="Trawl Scraper API", lifespan=lifespan)
@@ -76,6 +82,8 @@ async def scrape(request: ScrapeRequest):
 
     async with scraper_lock:
         try:
+            if not scraper.browser:
+                await scraper.start()
             result = await scraper.scrape(
                 url=request.url,
                 mode=request.mode,
@@ -111,6 +119,8 @@ async def extract_branding(request: BrandingRequest):
         raise HTTPException(status_code=400, detail="URL must start with http:// or https://")
     async with scraper_lock:
         try:
+            if not scraper.browser:
+                await scraper.start()
             result = await scraper.scrape(
                 url=request.url,
                 mode="single",
