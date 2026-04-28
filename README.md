@@ -43,6 +43,8 @@ Download the latest DMG from [Releases](https://github.com/emmi-dev12/trawl/rele
 
 The app will automatically check for updates on startup.
 
+Homebrew and npm install flows for the app itself are not published yet. Until they exist, the supported no-source install path is the DMG from Releases.
+
 ### Build from Source
 
 #### Prerequisites
@@ -52,6 +54,22 @@ The app will automatically check for updates on startup.
 - Node.js 16+
 - Rust 1.60+ (for Tauri)
 - Xcode Command Line Tools
+
+#### Install Developer Tooling
+
+Use Homebrew for the local toolchain:
+
+```bash
+brew install python node rustup-init
+xcode-select --install
+rustup-init -y
+```
+
+Use npm for the Tauri CLI:
+
+```bash
+npm install -g @tauri-apps/cli
+```
 
 #### Quick Setup
 
@@ -200,16 +218,16 @@ trawl/
 │   ├── scraper.py
 │   ├── server.py
 │   └── requirements.txt
-├── frontend/             # Native Tauri UI
-│   ├── index.html
-│   ├── renderer.js
-│   └── styles.css
+├── src/                  # React frontend
+│   ├── App.tsx
+│   ├── components/
+│   └── styles/
 ├── src-tauri/            # Tauri Rust backend
 │   ├── src/
 │   │   └── main.rs
 │   ├── build.rs
 │   └── Cargo.toml
-├── tauri.conf.json       # Tauri configuration
+├── src-tauri/tauri.conf.json  # Tauri configuration
 ├── package.json          # Node.js config
 └── README.md
 ```
@@ -263,7 +281,7 @@ MIT
 ## Architecture
 
 - **Backend**: Python + FastAPI + Playwright (localhost:5555)
-- **Frontend**: Electron + JavaScript
+- **Frontend**: React + TypeScript + Vite
 - **IPC**: HTTP API (no network exposure)
 
 ## Installation
@@ -313,7 +331,7 @@ playwright install chromium
 npm install
 
 # Run
-npm start
+npm run tauri-dev
 ```
 
 #### Build DMG Distribution
@@ -336,7 +354,7 @@ Or:
 npm run dev
 ```
 
-This starts both the backend and Electron app with hot-reload.
+This starts both the backend and the Tauri app with hot-reload.
 
 ## Auto-Updates
 

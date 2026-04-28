@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "start": "tauri dev",
     "tauri": "tauri",
     "tauri-dev": "tauri dev",
     "tauri-build": "tauri build",
+    "dist": "tauri build",
     "bundle": "tauri build",
     "backend": "cd backend && python server.py",
     "preview": "vite preview"
@@ -19,9 +21,9 @@
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^4.0.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "typescript": "^5.0.0",
-    "vite": "^4.5.0"
+    "vite": "^8.0.10"
   },
   "dependencies": {
     "lucide-react": "^0.268.0",

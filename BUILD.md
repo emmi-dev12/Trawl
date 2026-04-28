@@ -116,8 +116,8 @@ App launches with v25.04.2026-1200
 ```bash
 npm run build          # Build without publishing
 npm run build-release  # Build and prepare for release
-npm run dist          # Create DMG and ZIP (electron-builder)
-make dist             # Same as npm run dist
+npm run tauri-build   # Build the Tauri macOS app bundle
+make dist             # Same as npm run tauri-build
 ```
 
 ### GitHub Actions (`.github/workflows/build-release.yml`)
@@ -137,43 +137,15 @@ Does:
 8. Create GitHub Release
 9. Upload artifacts
 
-### electron-builder Configuration
+### Tauri Bundle Configuration
 
-In `package.json`:
+In `src-tauri/tauri.conf.json`:
 
-```json
-{
-  "build": {
-    "appId": "com.trawl.app",
-    "productName": "Trawl",
-    "mac": {
-      "target": ["dmg", "zip"],
-      "category": "public.app-category.utilities"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "emmi-dev12",
-      "repo": "trawl"
-    }
-  }
-}
-```
+The Tauri bundle settings define the macOS app identifier, icons, bundle targets, and packaged backend resources.
 
-Enables automatic DMG/ZIP creation and GitHub integration.
+### Updater Configuration
 
-### electron-updater Configuration
-
-In `frontend/main.js`:
-
-```javascript
-const { autoUpdater } = require("electron-updater");
-
-autoUpdater.checkForUpdates(); // Check for new releases
-autoUpdater.downloadUpdate();  // Download when available
-autoUpdater.quitAndInstall();  // Install and restart
-```
-
-Uses GitHub releases as update source automatically.
+Automatic updates are currently disabled in `src-tauri/tauri.conf.json`.
 
 ## File Locations
 
@@ -190,7 +162,7 @@ trawl/
     └── Trawl-DD.MM.YYYY-HHMM.dmg
 ```
 
-The `latest-mac.yml` file is used by electron-updater to check for updates.
+Tauri bundle output is managed by the Tauri CLI rather than `electron-updater`.
 
 ## Troubleshooting Build
 
@@ -281,4 +253,3 @@ For issues:
 - Check [Troubleshooting](../README.md#troubleshooting) in README
 - Review build logs in GitHub Actions
 - File issue on GitHub
-

@@ -4,7 +4,6 @@
 )]
 
 use std::process::Command;
-use tauri::Manager;
 
 fn start_python_backend(app: &tauri::AppHandle) {
   let script_path = app

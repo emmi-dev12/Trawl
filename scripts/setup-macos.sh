@@ -20,6 +20,7 @@ echo "✓ Python 3 found: $(python3 --version)"
 if ! command -v node &> /dev/null; then
     echo "❌ Node.js not found. Please install Node.js 16 or later."
     echo "   Install from https://nodejs.org/ or using Homebrew: brew install node"
+    echo "   If you need the Tauri CLI globally: npm install -g @tauri-apps/cli"
     exit 1
 fi
 
@@ -41,5 +42,5 @@ echo "✅ Setup complete!"
 echo ""
 echo "Next steps:"
 echo "  1. Run: make run"
-echo "  2. Or use: npm start"
+echo "  2. Or use: npm run tauri-dev"
 echo ""

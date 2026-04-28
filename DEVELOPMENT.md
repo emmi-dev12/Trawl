@@ -4,6 +4,22 @@
 
 ### Quick Start
 
+This section is for local development from source. End-user app installs should use the DMG from GitHub Releases.
+
+Install developer tooling with Homebrew:
+
+```bash
+brew install python node rustup-init
+xcode-select --install
+rustup-init -y
+```
+
+Install the Tauri CLI with npm:
+
+```bash
+npm install -g @tauri-apps/cli
+```
+
 ```bash
 # Install all dependencies
 make install
@@ -18,8 +34,8 @@ make dev
 # Just the backend
 cd backend && python server.py
 
-# Just the frontend (requires backend running)
-npm start
+# Just the Tauri app (requires backend running)
+npm run tauri-dev
 
 # Full build (DMG + ZIP)
 make dist
@@ -33,12 +49,10 @@ trawl/
 │   ├── scraper.py      # Core Playwright scraper
 │   ├── server.py       # FastAPI HTTP server
 │   └── requirements.txt # Python dependencies
-├── frontend/
-│   ├── main.js         # Electron main process
-│   ├── preload.js      # IPC bridge
-│   ├── renderer.js     # UI logic & updates
-│   ├── index.html      # UI structure
-│   └── styles.css      # Dark theme styles
+├── src/
+│   ├── App.tsx         # React app shell
+│   ├── components/     # UI components
+│   └── styles/         # Component styles
 ├── scripts/
 │   ├── build-standalone.sh  # PyInstaller build
 │   └── setup-macos.sh       # Setup helper
@@ -58,8 +72,8 @@ trawl/
    - No restart needed; backend reloads automatically
    - Test with: `curl http://127.0.0.1:5555/health`
 
-2. **Frontend changes**: Modify files in `frontend/`
-   - Electron auto-refreshes on save
+2. **Frontend changes**: Modify files in `src/`
+   - Tauri reloads on save during `npm run tauri-dev`
    - Use DevTools (F12) for debugging
    - Check console for errors
 
@@ -94,7 +108,7 @@ git push origin main
 
 This will:
 1. Install all dependencies
-2. Build the Electron app
+2. Build the Tauri app
 3. Create a DMG and ZIP
 4. Create a GitHub Release with `DD.MM.YYYY-HHMM` tag
 5. Upload artifacts
@@ -164,7 +178,7 @@ ipcRenderer.send('update-available', {version: '25.04.2026-1200'})
 
 ### App
 - Check DevTools Performance tab
-- Profile Electron process: `npm run dev` then Chrome DevTools
+- Profile the web UI with browser DevTools while running `npm run dev`
 
 ## Troubleshooting
 
@@ -195,8 +209,8 @@ npm install
 ### App Won't Start
 
 ```bash
-# Check main.js logs
-cat ~/Library/Logs/Trawl/main.log
+# Run the Tauri app directly for logs
+npm run tauri-dev
 
 # Check backend
 cd backend && python server.py  # Should show no errors
@@ -223,8 +237,7 @@ make dist
 
 ## Resources
 
-- [Electron Documentation](https://www.electronjs.org/docs)
-- [electron-updater](https://www.electron.build/auto-update)
+- [Tauri Documentation](https://tauri.app/)
 - [Playwright](https://playwright.dev/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 
