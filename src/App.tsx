@@ -110,6 +110,7 @@ export function App() {
   const [progress, setProgress] = useState({ current: 0, total: 0, message: '' })
   const [copied, setCopied] = useState(false)
   const [backendReady, setBackendReady] = useState(false)
+  const [backendError, setBackendError] = useState<string | null>(null)
   const branding = parseBrandingData(results[0]?.branding)
 
   // Poll backend health until ready
@@ -120,11 +121,17 @@ export function App() {
         const r = await fetch('http://127.0.0.1:5555/health')
         if (r.ok) {
           setBackendReady(true)
+          setBackendError(null)
           clearInterval(check)
         }
       } catch {
         attempts++
-        if (attempts > 60) clearInterval(check) // give up after 30s
+        if (attempts > 60) {
+          setBackendError(
+            'Backend failed to start. Install backend dependencies with `pip install -r backend/requirements.txt` and `playwright install chromium`, or point `TRAWL_PYTHON` at a prepared Python environment.'
+          )
+          clearInterval(check)
+        }
       }
     }, 500)
     return () => clearInterval(check)
@@ -254,7 +261,7 @@ export function App() {
         {!backendReady && (
           <div className="backend-starting">
             <span className="backend-dot" />
-            Starting backend…
+            {backendError ?? 'Starting backend…'}
           </div>
         )}
 
