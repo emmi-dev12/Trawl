@@ -36,8 +36,8 @@ pyinstaller \
 
 cd ..
 
-echo -e "${BLUE}Step 4: Building Electron app${NC}"
-npm run dist
+echo -e "${BLUE}Step 4: Building Tauri app${NC}"
+npm run tauri-build
 
 echo -e "${GREEN}✓ Build complete!${NC}"
 echo ""

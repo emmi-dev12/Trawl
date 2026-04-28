@@ -9,9 +9,10 @@ help:
 	@echo "  backend-deps    - Install Python dependencies"
 	@echo "  frontend-deps   - Install Node dependencies"
 	@echo "  run             - Run the app in development mode"
-	@echo "  build           - Build the Electron app"
-	@echo "  dist            - Create distributable DMG (macOS)"
-	@echo "  dev             - Run backend and frontend concurrently"
+	@echo "  build           - Build the frontend bundle"
+	@echo "  dist            - Build the Tauri macOS app bundle"
+	@echo "  run             - Launch the Tauri app in development mode"
+	@echo "  dev             - Run the frontend dev server"
 	@echo "  clean           - Clean build artifacts"
 	@echo ""
 
@@ -34,10 +35,10 @@ frontend-deps:
 
 run:
 	@echo "Starting Trawl app..."
-	npm start
+	npm run tauri-dev
 
 dev:
-	@echo "Starting Trawl in development mode..."
+	@echo "Starting Trawl frontend dev server..."
 	npm run dev
 
 build:
@@ -45,8 +46,8 @@ build:
 	npm run build
 
 dist:
-	@echo "Creating distribution DMG..."
-	npm run dist
+	@echo "Building Tauri macOS app..."
+	npm run tauri-build
 
 clean:
 	@echo "Cleaning build artifacts..."

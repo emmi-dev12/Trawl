@@ -6,6 +6,7 @@ import { BrandingPanel } from './components/BrandingPanel'
 import { StatusBar } from './components/StatusBar'
 import { UpdateNotification } from './components/UpdateNotification'
 import { MenuBar } from './components/MenuBar'
+import type { ScrapeConfig } from './components/ScraperForm'
 import './App.css'
 
 interface ScrapedPage {
@@ -17,12 +18,99 @@ interface ScrapedPage {
   branding?: Record<string, unknown>
 }
 
+interface BrandingData {
+  colors: string[]
+  fonts: string[]
+  logos: string[]
+  favicon: string | null
+  images: string[]
+  meta: {
+    description: string | null
+    site_name: string | null
+    theme_color: string | null
+    og_image: string | null
+  }
+}
+
+interface ProgressState {
+  current: number
+  total: number
+  message: string
+}
+
+interface ScrapeResponse {
+  pages: ScrapedPage[]
+  count: number
+  duration_seconds: number
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function parseProgressState(data: unknown): ProgressState | null {
+  if (!isRecord(data)) return null
+
+  const { current, total, message } = data
+  if (typeof current !== 'number' || typeof total !== 'number' || typeof message !== 'string') {
+    return null
+  }
+
+  return { current, total, message }
+}
+
+function parseScrapeResponse(data: unknown): ScrapeResponse | null {
+  if (!isRecord(data)) return null
+
+  const { pages, count, duration_seconds } = data
+  if (!Array.isArray(pages) || typeof count !== 'number' || typeof duration_seconds !== 'number') {
+    return null
+  }
+
+  return {
+    pages: pages as ScrapedPage[],
+    count,
+    duration_seconds
+  }
+}
+
+function parseBrandingData(data: unknown): BrandingData | null {
+  if (!isRecord(data)) return null
+
+  const { colors, fonts, logos, favicon, images, meta } = data
+  if (
+    !Array.isArray(colors) ||
+    !Array.isArray(fonts) ||
+    !Array.isArray(logos) ||
+    !Array.isArray(images) ||
+    (favicon !== null && typeof favicon !== 'string') ||
+    !isRecord(meta)
+  ) {
+    return null
+  }
+
+  return {
+    colors: colors.filter((value): value is string => typeof value === 'string'),
+    fonts: fonts.filter((value): value is string => typeof value === 'string'),
+    logos: logos.filter((value): value is string => typeof value === 'string'),
+    favicon,
+    images: images.filter((value): value is string => typeof value === 'string'),
+    meta: {
+      description: typeof meta.description === 'string' || meta.description === null ? meta.description : null,
+      site_name: typeof meta.site_name === 'string' || meta.site_name === null ? meta.site_name : null,
+      theme_color: typeof meta.theme_color === 'string' || meta.theme_color === null ? meta.theme_color : null,
+      og_image: typeof meta.og_image === 'string' || meta.og_image === null ? meta.og_image : null
+    }
+  }
+}
+
 export function App() {
   const [results, setResults] = useState<ScrapedPage[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState({ current: 0, total: 0, message: '' })
   const [copied, setCopied] = useState(false)
   const [backendReady, setBackendReady] = useState(false)
+  const branding = parseBrandingData(results[0]?.branding)
 
   // Poll backend health until ready
   useEffect(() => {
@@ -47,8 +135,11 @@ export function App() {
       if (isLoading) {
         try {
           const response = await fetch('http://127.0.0.1:5555/status')
-          const data = await response.json()
-          setProgress(data)
+          const data: unknown = await response.json()
+          const nextProgress = parseProgressState(data)
+          if (nextProgress) {
+            setProgress(nextProgress)
+          }
         } catch (error) {
           console.error('Status fetch error:', error)
         }
@@ -58,14 +149,7 @@ export function App() {
     return () => clearInterval(timer)
   }, [isLoading])
 
-  const handleScrape = async (config: {
-    url: string
-    mode: 'single' | 'crawl'
-    depth: number
-    max_pages: number
-    scroll: boolean
-    extract: string[]
-  }) => {
+  const handleScrape = async (config: ScrapeConfig) => {
     setIsLoading(true)
     setResults([])
     setProgress({ current: 0, total: config.max_pages, message: 'Starting...' })
@@ -77,12 +161,17 @@ export function App() {
         body: JSON.stringify(config)
       })
 
-      const data = await response.json()
-      setResults(data.pages)
+      const data: unknown = await response.json()
+      const parsed = parseScrapeResponse(data)
+      if (!parsed) {
+        throw new Error('Invalid scrape response from backend')
+      }
+
+      setResults(parsed.pages)
       setProgress({
-        current: data.count,
-        total: data.count,
-        message: `Completed in ${data.duration_seconds}s`
+        current: parsed.count,
+        total: parsed.count,
+        message: `Completed in ${parsed.duration_seconds}s`
       })
     } catch (error) {
       setProgress({
@@ -194,8 +283,8 @@ export function App() {
             isLoading={isLoading}
           />
 
-          {results.length > 0 && results[0]?.branding && Object.keys(results[0].branding).length > 0 && (
-            <BrandingPanel branding={results[0].branding as any} />
+          {branding && Object.keys(branding).length > 0 && (
+            <BrandingPanel branding={branding} />
           )}
 
           {/* Export Buttons */}

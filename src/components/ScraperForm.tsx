@@ -1,9 +1,18 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Play, Settings } from 'lucide-react'
 import '../styles/form.css'
 
+export interface ScrapeConfig {
+  url: string
+  mode: 'single' | 'crawl'
+  depth: number
+  max_pages: number
+  scroll: boolean
+  extract: string[]
+}
+
 interface ScraperFormProps {
-  onScrape: (config: any) => void
+  onScrape: (config: ScrapeConfig) => void
   isLoading: boolean
 }
 
@@ -19,10 +28,10 @@ export function ScraperForm({ onScrape, isLoading }: ScraperFormProps) {
   const [extractBranding, setExtractBranding] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const extract = []
+    const extract: string[] = []
     if (extractLinks) extract.push('links')
     if (extractText) extract.push('text')
     if (extractStructured) extract.push('structured')
@@ -95,7 +104,7 @@ export function ScraperForm({ onScrape, isLoading }: ScraperFormProps) {
                 min="1"
                 max="10"
                 value={depth}
-                onChange={(e) => setDepth(parseInt(e.target.value))}
+                onChange={(e) => setDepth(Number(e.target.value))}
                 disabled={isLoading}
               />
             </div>
@@ -106,7 +115,7 @@ export function ScraperForm({ onScrape, isLoading }: ScraperFormProps) {
                 min="1"
                 max="500"
                 value={maxPages}
-                onChange={(e) => setMaxPages(parseInt(e.target.value))}
+                onChange={(e) => setMaxPages(Number(e.target.value))}
                 disabled={isLoading}
               />
             </div>
