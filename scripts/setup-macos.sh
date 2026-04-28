@@ -8,13 +8,18 @@ set -e
 echo "🚀 Setting up Trawl..."
 
 # Check Python
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Python 3 not found. Please install Python 3.8 or later."
-    echo "   Install from https://www.python.org/ or using Homebrew: brew install python3"
+PYTHON_BIN=""
+if command -v python3.12 &> /dev/null; then
+    PYTHON_BIN="python3.12"
+elif command -v python3.11 &> /dev/null; then
+    PYTHON_BIN="python3.11"
+else
+    echo "❌ Python 3.11 or 3.12 not found."
+    echo "   Install from https://www.python.org/ or using Homebrew: brew install python@3.12"
     exit 1
 fi
 
-echo "✓ Python 3 found: $(python3 --version)"
+echo "✓ Python found: $($PYTHON_BIN --version)"
 
 # Check Node
 if ! command -v node &> /dev/null; then
@@ -28,11 +33,14 @@ echo "✓ Node.js found: $(node --version)"
 
 # Install dependencies
 echo ""
+echo "📦 Creating backend virtualenv..."
+$PYTHON_BIN -m venv backend/.venv
+
 echo "📦 Installing Python dependencies..."
-pip install -r backend/requirements.txt
+backend/.venv/bin/pip install -r backend/requirements.txt
 
 echo "📦 Installing Playwright browsers..."
-playwright install chromium
+backend/.venv/bin/playwright install chromium
 
 echo "📦 Installing Node dependencies..."
 npm install
@@ -40,6 +48,7 @@ npm install
 echo ""
 echo "✅ Setup complete!"
 echo ""
+echo "Backend python: backend/.venv/bin/python"
 echo "Next steps:"
 echo "  1. Run: make run"
 echo "  2. Or use: npm run tauri-dev"

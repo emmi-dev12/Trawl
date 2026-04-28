@@ -9,7 +9,7 @@ This section is for local development from source. End-user app installs should 
 Install developer tooling with Homebrew:
 
 ```bash
-brew install python node rustup-init
+brew install python@3.12 node rustup-init
 xcode-select --install
 rustup-init -y
 ```
@@ -32,7 +32,7 @@ make dev
 
 ```bash
 # Just the backend
-cd backend && python server.py
+backend/.venv/bin/python backend/server.py
 
 # Just the Tauri app (requires backend running)
 npm run tauri-dev
