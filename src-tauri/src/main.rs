@@ -5,20 +5,25 @@
 
 use std::process::Command;
 
-fn python_candidates(app: &tauri::AppHandle) -> Vec<std::path::PathBuf> {
+fn python_candidates(app: &tauri::AppHandle, script_dir: &std::path::Path) -> Vec<std::path::PathBuf> {
   let resource_dir = app
     .path_resolver()
     .resource_dir()
     .unwrap_or_else(|| std::path::PathBuf::from("."));
 
   let cwd = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
+  let script_dir = script_dir.to_path_buf();
+  let script_parent = script_dir
+    .parent()
+    .map(std::path::Path::to_path_buf)
+    .unwrap_or_else(|| std::path::PathBuf::from("."));
   let mut candidates = Vec::new();
 
   if let Ok(explicit) = std::env::var("TRAWL_PYTHON") {
     candidates.push(std::path::PathBuf::from(explicit));
   }
 
-  for base in [&cwd, &resource_dir] {
+  for base in [&script_dir, &script_parent, &cwd, &resource_dir] {
     candidates.push(base.join("backend/.venv/bin/python3"));
     candidates.push(base.join(".venv/bin/python3"));
     candidates.push(base.join("backend/venv/bin/python3"));
@@ -42,7 +47,7 @@ fn start_python_backend(app: &tauri::AppHandle) {
     .unwrap_or_else(|| std::path::PathBuf::from("backend"));
 
   let mut started = false;
-  for python in python_candidates(app) {
+  for python in python_candidates(app, &script_dir) {
     let mut command = Command::new(&python);
     command.current_dir(&script_dir).arg(&script_path);
 

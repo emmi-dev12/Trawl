@@ -12,7 +12,7 @@
     "tauri-build": "tauri build",
     "dist": "tauri build",
     "bundle": "tauri build",
-    "backend": "cd backend && python server.py",
+    "backend": "backend/.venv/bin/python backend/server.py",
     "preview": "vite preview"
   },
   "devDependencies": {

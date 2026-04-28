@@ -22,10 +22,20 @@ install: frontend-deps backend-deps
 install-deps: install
 
 backend-deps:
-	@echo "Installing Python dependencies..."
-	pip install -r backend/requirements.txt
+	@echo "Creating backend virtualenv..."
+	@if command -v python3.12 >/dev/null 2>&1; then \
+		PYTHON=python3.12; \
+	elif command -v python3.11 >/dev/null 2>&1; then \
+		PYTHON=python3.11; \
+	else \
+		echo "Python 3.11 or 3.12 is required for backend dependencies."; \
+		exit 1; \
+	fi; \
+	$$PYTHON -m venv backend/.venv
+	@echo "Installing Python dependencies into backend/.venv..."
+	backend/.venv/bin/pip install -r backend/requirements.txt
 	@echo "Installing Playwright browsers..."
-	playwright install chromium
+	backend/.venv/bin/playwright install chromium
 	@echo "✓ Python dependencies installed"
 
 frontend-deps:
@@ -53,6 +63,7 @@ clean:
 	@echo "Cleaning build artifacts..."
 	rm -rf dist/
 	rm -rf node_modules/
+	rm -rf backend/.venv/
 	rm -rf backend/__pycache__/
 	rm -rf *.dmg
 	rm -rf out/

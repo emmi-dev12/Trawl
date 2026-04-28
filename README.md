@@ -50,7 +50,7 @@ Homebrew and npm install flows for the app itself are not published yet. Until t
 #### Prerequisites
 
 - macOS 10.13+
-- Python 3.8+
+- Python 3.11 or 3.12
 - Node.js 16+
 - Rust 1.60+ (for Tauri)
 - Xcode Command Line Tools
@@ -60,7 +60,7 @@ Homebrew and npm install flows for the app itself are not published yet. Until t
 Use Homebrew for the local toolchain:
 
 ```bash
-brew install python node rustup-init
+brew install python@3.12 node rustup-init
 xcode-select --install
 rustup-init -y
 ```
@@ -79,12 +79,10 @@ git clone https://github.com/emmi-dev12/trawl.git
 cd trawl
 
 # Install dependencies
-pip install -r backend/requirements.txt
-playwright install chromium
-npm install
+make install
 
 # Development mode
-npm run dev
+npm run tauri-dev
 
 # Build DMG
 npm run bundle
