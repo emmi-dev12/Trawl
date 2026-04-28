@@ -5,15 +5,26 @@
 
 use std::process::Command;
 
-fn python_candidates(app: &tauri::AppHandle, script_dir: &std::path::Path) -> Vec<std::path::PathBuf> {
+fn backend_root(app: &tauri::AppHandle) -> std::path::PathBuf {
+  if cfg!(debug_assertions) {
+    return std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../backend");
+  }
+
+  app
+    .path_resolver()
+    .resolve_resource("backend")
+    .unwrap_or_else(|| std::path::PathBuf::from("backend"))
+}
+
+fn python_candidates(app: &tauri::AppHandle, backend_root: &std::path::Path) -> Vec<std::path::PathBuf> {
   let resource_dir = app
     .path_resolver()
     .resource_dir()
     .unwrap_or_else(|| std::path::PathBuf::from("."));
 
   let cwd = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
-  let script_dir = script_dir.to_path_buf();
-  let script_parent = script_dir
+  let backend_root = backend_root.to_path_buf();
+  let backend_parent = backend_root
     .parent()
     .map(std::path::Path::to_path_buf)
     .unwrap_or_else(|| std::path::PathBuf::from("."));
@@ -23,11 +34,18 @@ fn python_candidates(app: &tauri::AppHandle, script_dir: &std::path::Path) -> Ve
     candidates.push(std::path::PathBuf::from(explicit));
   }
 
-  for base in [&script_dir, &script_parent, &cwd, &resource_dir] {
+  candidates.push(backend_root.join(".venv/bin/python3"));
+  candidates.push(backend_root.join(".venv/bin/python"));
+
+  for base in [&backend_parent, &cwd, &resource_dir] {
     candidates.push(base.join("backend/.venv/bin/python3"));
+    candidates.push(base.join("backend/.venv/bin/python"));
     candidates.push(base.join(".venv/bin/python3"));
+    candidates.push(base.join(".venv/bin/python"));
     candidates.push(base.join("backend/venv/bin/python3"));
+    candidates.push(base.join("backend/venv/bin/python"));
     candidates.push(base.join("venv/bin/python3"));
+    candidates.push(base.join("venv/bin/python"));
   }
 
   candidates.push(std::path::PathBuf::from("python3"));
@@ -36,20 +54,13 @@ fn python_candidates(app: &tauri::AppHandle, script_dir: &std::path::Path) -> Ve
 }
 
 fn start_python_backend(app: &tauri::AppHandle) {
-  let script_path = app
-    .path_resolver()
-    .resolve_resource("backend/server.py")
-    .unwrap_or_else(|| std::path::PathBuf::from("backend/server.py"));
-
-  let script_dir = script_path
-    .parent()
-    .map(std::path::Path::to_path_buf)
-    .unwrap_or_else(|| std::path::PathBuf::from("backend"));
+  let backend_root = backend_root(app);
+  let script_path = backend_root.join("server.py");
 
   let mut started = false;
-  for python in python_candidates(app, &script_dir) {
+  for python in python_candidates(app, &backend_root) {
     let mut command = Command::new(&python);
-    command.current_dir(&script_dir).arg(&script_path);
+    command.current_dir(&backend_root).arg(&script_path);
 
     match command.spawn() {
       Ok(_) => {
