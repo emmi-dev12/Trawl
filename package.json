@@ -34,6 +34,9 @@
     "type": "git",
     "url": "https://github.com/emmi-dev12/trawl.git"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "author": "Trawl Team",
   "license": "MIT"
 }
